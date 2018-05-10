@@ -11,6 +11,8 @@
 
     var transService, stationService, linesearchService;
 
+    var drawArray = [];
+
 
     init(); // 初始化所有插件
 
@@ -52,6 +54,7 @@
 
 //根据起、终点坐标查询公交换乘路线
     document.getElementById('search').onclick = function () {
+        map.remove(drawArray);
         let value = document.getElementById('input').value;
         stationSearch(value);
     };
@@ -79,8 +82,9 @@
                     position: stationArr[i].location,
                     map: map,
                     title: stationArr[i].name,
-                    icon:"http://webapi.amap.com/theme/v1.3/markers/n/mark_g.png"
+                    icon:"location.png"
                 });
+                drawArray.push(marker);
                 marker.info = new AMap.InfoWindow({
                     content: stationArr[i].name,
                     offset: new AMap.Pixel(0, -30)
@@ -158,12 +162,13 @@
         stmarker.on('click', function (e) {
             e.target.info.open(map, e.target.getPosition())
         });
-        var endmarker = new AMap.Marker({
-            map: map,
-            position: [endPot.lng, endPot.lat], //基点位置
-            icon: "https://webapi.amap.com/theme/v1.3/markers/n/end.png",
-            zIndex: 10
-        });
+        drawArray.push(stmarker);
+        // var endmarker = new AMap.Marker({
+        //     map: map,
+        //     position: [endPot.lng, endPot.lat], //基点位置
+        //     icon: "https://webapi.amap.com/theme/v1.3/markers/n/end.png",
+        //     zIndex: 10
+        // });
         //绘制乘车的路线
         var busPolyline = new AMap.Polyline({
             map: map,
@@ -172,6 +177,7 @@
             strokeOpacity: 0.8,//线透明度
             strokeWeight: 6//线宽
         });
+        drawArray.push(busPolyline)
         map.setFitView();
     }
 
